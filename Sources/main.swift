@@ -10,8 +10,6 @@ final class Localization {
     }
 }
 
-private let outputFilename = "Localizable.strings"
-
 let main = command { (projectName: String, id: String) in
     do {
         let str = "https://docs.google.com/spreadsheets/d/\(id)/pub?output=csv"
@@ -45,7 +43,7 @@ let main = command { (projectName: String, id: String) in
         try localizations.forEach { loc in
             let transDir = projDir.appendingPathComponent("\(loc.lang).lproj")
             try fileManager.createDirectory(at: transDir, withIntermediateDirectories: true, attributes: nil)
-            let fileUrl = transDir.appendingPathComponent(outputFilename)
+            let fileUrl = transDir.appendingPathComponent("Localizable.strings")
             let data = loc.translations.map { (key: String, value: String) -> String in
                 "\"\(key)\" = \"\(value)\";"
             }.joined(separator: "\n").data(using: .utf8)
