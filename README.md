@@ -1,5 +1,34 @@
+# Mobile Localizer
+
+## Overview
+
+This program fetch a published Google Spreadsheet formatted like [this](https://docs.google.com/spreadsheets/d/15WlWL5Dz40j0ckCPQI0an52IybJn3uSBQehYEo9IQWw/pubhtml).
+Currently it only support iOS.
+
+## Requirements
+
+The Google Spreadsheet must be published. You can do that from `File > Publish on the web`.
+You can find the spreadsheet id from the url.
+
+## Usage
+
+You can use the binary from this repository, you must execute the binary from your project directory.
+
+```
+./MobileLocalizer <project_name> <spreadsheet_id>
+```
+
+## Compile from sources
+
+```
+swift build -c release
+```
+
+You'll find the binary under `.build/debug` directory.
+
+## Develop
+
 ```
 swift package generate-xcodeproj
-swift build
-swift .build/debug/MobileLocalizer
+open -a Xcode .
 ```
