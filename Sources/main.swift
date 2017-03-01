@@ -47,7 +47,7 @@ let main = command { (projectName: String, id: String) in
             try fileManager.createDirectory(at: transDir, withIntermediateDirectories: true, attributes: nil)
             let fileUrl = transDir.appendingPathComponent(outputFilename)
             let data = loc.translations.map { (key: String, value: String) -> String in
-                "\"\(key)\" = \"\(value)\""
+                "\"\(key)\" = \"\(value)\";"
             }.joined(separator: "\n").data(using: .utf8)
             try data?.write(to: fileUrl)
         }
