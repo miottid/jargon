@@ -1,4 +1,4 @@
-# Mobile Localizer
+# jargon
 
 ## Overview
 
@@ -15,7 +15,7 @@ You can find the spreadsheet id from the url.
 You can use the binary from this repository, you must execute the binary from your project directory.
 
 ```
-./MobileLocalizer <project_name> <spreadsheet_id>
+./jargon <project_name> <spreadsheet_id>
 ```
 
 ## Compile from sources
