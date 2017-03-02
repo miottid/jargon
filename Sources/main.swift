@@ -10,9 +10,8 @@ let main = command(
     do {
         let translations = try loadSpreadsheet(id: spreadsheetId)
         try writeiOS(translations, for: projectName)
-        debugPrint(translations)
     } catch let err {
-        print("Error while loading spreadsheet \(spreadsheetId): \(err)")
+        print("Error while loading spreadsheet \(spreadsheetId): \(err.localizedDescription)\n\n \(err)")
     }
 }
 

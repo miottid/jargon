@@ -24,12 +24,3 @@ final class Translation {
         self.translations = translations
     }
 }
-
-
-/// Prints debug information about translations, that cool how pattern matching is working
-///
-/// - Parameter translations: translations to show
-func debugPrint(_ translations: [Translation]) {
-    let supportedTranslations = translations.map({ $0.lang }).joined(separator: ",")
-    print("Supported languages: \(supportedTranslations)")
-}
