@@ -1,6 +1,6 @@
 //
 //  Writer.swift
-//  MobileLocalizer
+//  jargon
 //
 //  Created by David Miotti on 02/03/2017.
 //

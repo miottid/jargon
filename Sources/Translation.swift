@@ -1,6 +1,6 @@
 //
-//  Localization.swift
-//  MobileLocalizer
+//  Translation.swift
+//  jargon
 //
 //  Created by David Miotti on 01/03/2017.
 //
