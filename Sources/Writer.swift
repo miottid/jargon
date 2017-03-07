@@ -42,7 +42,8 @@ private func writeiOS(translation: Translation, for project: String) throws -> U
 ///   - value: The value for the provided key
 /// - Returns: A line that is conform with iOS projects
 private func buildiOSLine(forKey key: String, value: String) -> String {
-    return "\"\(key)\" = \"\(sanitize(value))\";"
+    let formattedValue = sanitize(value)
+    return "\"\(key)\" = \"\(formattedValue)\";"
 }
 
 /// Transform the string into correct parseable iOS format
@@ -52,11 +53,16 @@ private func buildiOSLine(forKey key: String, value: String) -> String {
 private func sanitize(_ string: String) -> String {
     let replaceTable = [
         "%s": "%@",
-        "\"": "\\\"",
-        "%newline%": "\\n"
+        "%([0-9]\\$)+s": "%$1@",
+        "%newline%": "\\\\n",
+        "\"": "\\\\\""
     ]
     return replaceTable.reduce(string) {
-        $0.replacingOccurrences(of: $1.key, with: $1.value)
+        $0.replacingOccurrences(
+            of: $1.key,
+            with: $1.value,
+            options: [.regularExpression, .caseInsensitive]
+        )
     }
 }
 
