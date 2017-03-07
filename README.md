@@ -10,6 +10,12 @@ Currently it only support iOS.
 The Google Spreadsheet must be published. You can do that from `File > Publish on the web`.
 You can find the spreadsheet id from the url.
 
+## Installation
+
+```
+brew install https://raw.githubusercontent.com/dmiotti/jargon/master/jargon.rb
+```
+
 ## Usage
 
 You can use the binary from this repository, you must execute the binary from your project directory.
