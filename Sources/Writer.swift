@@ -8,30 +8,48 @@
 
 import Foundation
 
-/// Write translations in the xcode project
+/// Write translations files in the current directory
 ///
 /// - Parameters:
-///   - translations: the translation to write
-///   - projectName: the project folder name
+///   - translations: Translations to write
+///   - project: Project folder name
 /// - Throws: Error writing the translation
-func writeiOS(_ translations: [Translation], for projectName: String) throws {
-    try translations.forEach { loc in
-        let fileUrl = try buildFilePath(forProject: projectName, lang: loc.lang)
-        // Transform our object to ios data
-        let lines = loc.translations.map { key, value in
-            "\"\(key)\" = \"\(sanitize(value))\";"
-        }
-        let content = lines.joined(separator: "\n")
-        let data = content.data(using: .utf8)
-        try data?.write(to: fileUrl)
+func writeiOS(_ translations: [Translation], for project: String) throws -> [URL] {
+    return try translations.map {
+        try writeiOS(translation: $0, for: project)
     }
+}
+
+/// Write a translation on disk based on the project name
+///
+/// - Parameters:
+///   - translation: The translation to be written
+///   - project: The project name that describe the directory where Localizable.string should reside
+/// - Throws: Most of the time a filesystem permission problem or insufficient disk space
+private func writeiOS(translation: Translation, for project: String) throws -> URL {
+    let fileUrl = try buildFilePath(forProject: project, lang: translation.lang)
+    let lines = translation.translations.map(buildiOSLine)
+    let content = lines.joined(separator: "\n")
+    let data = content.data(using: .utf8)
+    try data?.write(to: fileUrl)
+    return fileUrl
+}
+
+/// Construct a line from a translation entry that is conform with iOS
+///
+/// - Parameters:
+///   - key: The current key
+///   - value: The value for the provided key
+/// - Returns: A line that is conform with iOS projects
+private func buildiOSLine(forKey key: String, value: String) -> String {
+    return "\"\(key)\" = \"\(sanitize(value))\";"
 }
 
 /// Transform the string into correct parseable iOS format
 ///
 /// - Parameter string: The parsed to be formatted
 /// - Returns: The formatted string
-func sanitize(_ string: String) -> String {
+private func sanitize(_ string: String) -> String {
     let replaceTable = [
         "%s": "%@",
         "\"": "\\\"",
@@ -49,7 +67,7 @@ func sanitize(_ string: String) -> String {
 ///   - lang: The lang description
 /// - Returns: The url of the Localization.string based on the project name
 /// - Throws: An error if directories failed to creates
-func buildFilePath(forProject name: String, lang: String) throws -> URL {
+private func buildFilePath(forProject name: String, lang: String) throws -> URL {
     let fileManager = FileManager.default
     let currDir = URL(fileURLWithPath: fileManager.currentDirectoryPath)
     let projDir = currDir.appendingPathComponent(name)

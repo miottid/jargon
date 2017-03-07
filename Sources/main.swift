@@ -9,7 +9,7 @@ let main = command(
 ) { projectName, spreadsheetId in
     do {
         let translations = try loadSpreadsheet(id: spreadsheetId)
-        try writeiOS(translations, for: projectName)
+        _ = try writeiOS(translations, for: projectName)
     } catch let err {
         print("Error while loading spreadsheet \(spreadsheetId): \(err.localizedDescription)\n\n \(err)")
     }
