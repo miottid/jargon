@@ -16,7 +16,7 @@ import Foundation
 /// - Throws: Error writing the translation
 func writeiOS(_ translations: [Translation], for project: String) throws -> [URL] {
     return try translations.map {
-        try writeiOS(translation: $0, for: project)
+        try write(translation: $0, for: project)
     }
 }
 
@@ -26,13 +26,21 @@ func writeiOS(_ translations: [Translation], for project: String) throws -> [URL
 ///   - translation: The translation to be written
 ///   - project: The project name that describe the directory where Localizable.string should reside
 /// - Throws: Most of the time a filesystem permission problem or insufficient disk space
-private func writeiOS(translation: Translation, for project: String) throws -> URL {
+private func write(translation: Translation, for project: String) throws -> URL {
     let fileUrl = try buildFilePath(forProject: project, lang: translation.lang)
-    let lines = translation.translations.map(buildiOSLine)
-    let content = lines.joined(separator: "\n")
-    let data = content.data(using: .utf8)
+    let contents = fileContents(for: translation)
+    let data = contents.data(using: .utf8)
     try data?.write(to: fileUrl)
     return fileUrl
+}
+
+/// Transform a Translation object to a string content
+///
+/// - Parameter translation: The translation to be transformed
+/// - Returns: The string containing the translation text
+private func fileContents(for translation: Translation) -> String {
+    let lines = translation.translations.map(buildiOSLine)
+    return lines.joined(separator: "\n")
 }
 
 /// Construct a line from a translation entry that is conform with iOS
@@ -41,16 +49,16 @@ private func writeiOS(translation: Translation, for project: String) throws -> U
 ///   - key: The current key
 ///   - value: The value for the provided key
 /// - Returns: A line that is conform with iOS projects
-private func buildiOSLine(forKey key: String, value: String) -> String {
-    let formattedValue = sanitize(value)
-    return "\"\(key)\" = \"\(formattedValue)\";"
+private func buildiOSLine(for key: String, value: String) -> String {
+    let normalized = normalize(value)
+    return "\"\(key)\" = \"\(normalized)\";"
 }
 
 /// Transform the string into correct parseable iOS format
 ///
 /// - Parameter string: The parsed to be formatted
 /// - Returns: The formatted string
-private func sanitize(_ string: String) -> String {
+private func normalize(_ string: String) -> String {
     let replaceTable = [
         "%s": "%@",
         "%([0-9]\\$)+s": "%$1@",
