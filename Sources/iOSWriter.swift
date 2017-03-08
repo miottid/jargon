@@ -39,7 +39,7 @@ private func write(translation: Translation, for project: String) throws -> URL 
 /// - Parameter translation: The translation to be transformed
 /// - Returns: The string containing the translation text
 private func fileContents(for translation: Translation) -> String {
-    let lines = translation.translations.map(buildiOSLine)
+    let lines = translation.translations.map(buildLine)
     return lines.joined(separator: "\n")
 }
 
@@ -49,7 +49,7 @@ private func fileContents(for translation: Translation) -> String {
 ///   - key: The current key
 ///   - value: The value for the provided key
 /// - Returns: A line that is conform with iOS projects
-private func buildiOSLine(for key: String, value: String) -> String {
+private func buildLine(for key: String, value: String) -> String {
     let normalized = normalize(value)
     return "\"\(key)\" = \"\(normalized)\";"
 }
