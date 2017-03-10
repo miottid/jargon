@@ -40,7 +40,9 @@ private func write(translation: Translation) throws -> URL {
 /// - Returns: The string containing the translation text
 private func fileContents(for translation: Translation) -> String {
     let lines = translation.translations.map(buildLine)
-    return lines.joined(separator: "\n")
+    let header = "<?xml version=\"1.0\" encoding=\"utf-8\">\n\t<resources>\n\t"
+    let footer = "\n\t</resources>\n"
+    return header + lines.joined(separator: "\n\t\t") + footer
 }
 
 /// Construct a line from a translation entry that is conform with Android
@@ -82,8 +84,18 @@ private func normalize(_ string: String) -> String {
 ///   - lang: The lang description
 /// - Returns: The url of the file
 /// - Throws: An error if directories failed to creates
-private func buildFilePath(lang: String) throws -> URL {
-    throw NSError(domain: "Android Writer: buildFilePath()", code: 0, userInfo: [
-        NSLocalizedDescriptionKey: "Not implemented"
-    ])
+private func buildFilePath(lang: String?) throws -> URL {
+    let fileManager = FileManager.default
+    let currDir = URL(fileURLWithPath: fileManager.currentDirectoryPath)
+    var dirs = [ "app", "src", "main", "res" ]
+    if let lang = lang {
+        dirs.append("values-\(lang)")
+    } else {
+        dirs.append("values")
+    }
+    let destDir = dirs.reduce(currDir) {
+        $0.appendingPathComponent($1)
+    }
+    try fileManager.createDirectory(at: destDir, withIntermediateDirectories: true, attributes: nil)
+    return destDir.appendingPathComponent("strings.xml")
 }
