@@ -13,7 +13,8 @@ private func handleAndroid(spreadsheetId: String, baseLang: String) throws {
 }
 
 private func handlei18n(spreadsheetId: String) throws {
-    _ = try loadSpreadsheet(id: spreadsheetId)
+    let translations = try loadSpreadsheet(id: spreadsheetId)
+    _ = try writei18n(translations)
 }
 
 let projectArg = Argument<String>("project", description: "Project folder name")

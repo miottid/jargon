@@ -52,23 +52,42 @@ private func fileContents(for translation: Translation) -> String {
 ///   - value: The value for the provided key
 /// - Returns: A line that is conform with Android projects
 private func buildLine(for key: String, value: String) -> String {
-    let normalized = normalize(value)
-    return "<string name=\"\(key)\">\(normalized)</string>"
+    let normalizedKey = normalize(key: key)
+    let normalizedValue = normalize(value: value)
+    return "<string name=\"\(normalizedKey)\">\(normalizedValue)</string>"
 }
 
-/// Transform the string into correct parseable Android format
+/// Transform value string into correct parseable Android format
 ///
 /// - Parameter string: The parsed to be formatted
 /// - Returns: The formatted string
-private func normalize(_ string: String) -> String {
-    let replaceTable = [
+private func normalize(value: String) -> String {
+    let table = [
         "%@": "%s",
         "%([0-9]\\$)+@": "%$1s",
         "%newline%": "\\\\n",
         "\"": "\\\\\"",
         "&": "&amp;"
     ]
-    return replaceTable.reduce(string) {
+    return applyReplace(table: table, for: value)
+}
+
+/// Transform key string into correct parseable Android format
+///
+/// - Parameter string: The parsed to be formatted
+/// - Returns: The formatted string
+private func normalize(key: String) -> String {
+    return applyReplace(table: [ ".": "_" ], for: key)
+}
+
+/// Use regular expression to replace occurence of matched pattern
+///
+/// - Parameters:
+///   - table: A dictionnary reprensented like `[ "%([0-9]\\$)+@": "%$1s" ]`
+///   - string: The string where replace should occurs
+/// - Returns: A new string with applied regex
+private func applyReplace(table: [String: String], for string: String) -> String {
+    return table.reduce(string) {
         $0.replacingOccurrences(
             of: $1.key,
             with: $1.value,
