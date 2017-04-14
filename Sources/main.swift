@@ -4,7 +4,7 @@ import CSV
 
 private func handleiOS(for project: String, spreadsheetId: String, baseLang: String) throws {
     let translations = try loadSpreadsheet(id: spreadsheetId)
-    _ = try writeiOS(translations, for: project)
+    _ = try writeiOS(translations, for: project, baseLang: baseLang)
 }
 
 private func handleAndroid(spreadsheetId: String, baseLang: String) throws {

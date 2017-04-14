@@ -24,6 +24,11 @@ You can use the binary from this repository, you must execute the binary from yo
 ./jargon <project_name> <spreadsheet_id>
 ```
 
+For example: 
+```
+jargon ios Koala 1_ybVFNwVsYcsnHlXeL1J0Ls47jsMkx3aAzyP4usVOhE --baseLang fr
+```
+
 ## Compile from sources
 
 ```

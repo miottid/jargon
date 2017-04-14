@@ -14,10 +14,19 @@ import Foundation
 ///   - translations: Translations to write
 ///   - project: Project folder name
 /// - Throws: Error writing the translation
-func writeiOS(_ translations: [Translation], for project: String) throws -> [URL] {
-    return try translations.map {
-        try write(translation: $0, for: project)
+func writeiOS(_ translations: [Translation], for project: String, baseLang: String) throws -> [URL] {
+    var fileUrls = try translations.map { try write(translation: $0, for: project) }
+    var baseTranslation: Translation?
+    if baseLang == "default" {
+        baseTranslation = translations.first
+    } else if let trans = translations.filter({ $0.lang == baseLang }).first {
+        baseTranslation = trans
     }
+    if let trans = baseTranslation {
+        let baseUrl = try write(translation: trans, for: project, isBase: true)
+        fileUrls.append(baseUrl)
+    }
+    return fileUrls
 }
 
 /// Write a translation on disk based on the project name
@@ -26,8 +35,8 @@ func writeiOS(_ translations: [Translation], for project: String) throws -> [URL
 ///   - translation: The translation to be written
 ///   - project: The project name that describe the directory where Localizable.string should reside
 /// - Throws: Most of the time a filesystem permission problem or insufficient disk space
-private func write(translation: Translation, for project: String) throws -> URL {
-    let fileUrl = try buildFilePath(forProject: project, lang: translation.lang)
+private func write(translation: Translation, for project: String, isBase: Bool = false) throws -> URL {
+    let fileUrl = try buildFilePath(forProject: project, lang: translation.lang, isBase: isBase)
     let contents = fileContents(for: translation)
     let data = contents.data(using: .utf8)
     try data?.write(to: fileUrl)
@@ -82,11 +91,12 @@ private func normalize(_ string: String) -> String {
 ///   - lang: The lang description
 /// - Returns: The url of the Localization.string based on the project name
 /// - Throws: An error if directories failed to creates
-private func buildFilePath(forProject name: String, lang: String) throws -> URL {
+private func buildFilePath(forProject name: String, lang: String, isBase: Bool = false) throws -> URL {
     let fileManager = FileManager.default
     let currDir = URL(fileURLWithPath: fileManager.currentDirectoryPath)
     let projDir = currDir.appendingPathComponent(name)
-    let transDir = projDir.appendingPathComponent("\(lang).lproj")
+    let filename = isBase ? "Base" : lang
+    let transDir = projDir.appendingPathComponent("\(filename).lproj")
     try fileManager.createDirectory(at: transDir, withIntermediateDirectories: true, attributes: nil)
     return transDir.appendingPathComponent("Localizable.strings")
 }
