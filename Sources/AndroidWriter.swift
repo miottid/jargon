@@ -67,7 +67,8 @@ private func normalize(value: String) -> String {
         "%([0-9]\\$)+@": "%$1s",
         "%newline%": "\\\\n",
         "\"": "\\\\\"",
-        "&": "&amp;"
+        "&": "&amp;",
+        "\\n": "\\\\n"
     ]
     return applyReplace(table: table, for: value)
 }

@@ -63,7 +63,8 @@ private func normalize(_ string: String) -> String {
         "%s": "%@",
         "%([0-9]\\$)+s": "%$1@",
         "%newline%": "\\\\n",
-        "\"": "\\\\\""
+        "\"": "\\\\\"",
+        "\\n": "\\\\n"
     ]
     return replaceTable.reduce(string) {
         $0.replacingOccurrences(
