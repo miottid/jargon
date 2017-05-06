@@ -38,7 +38,7 @@ private func write(translation: Translation) throws -> URL {
 /// - Parameter translation: The translation to be transformed
 /// - Returns: The string containing the translation text
 private func fileContents(for translation: Translation) throws -> String {
-	let converted = convertToYAMLDictionnary(translation)
+    let converted = convertToYAMLDictionnary(translation)
 	return try Yams.dump(object: converted)
 }
 
@@ -47,13 +47,10 @@ private func fileContents(for translation: Translation) throws -> String {
 /// - Parameter translation: The translation to be converted
 /// - Returns: A dictionnary containing the translation on a YAML format
 private func convertToYAMLDictionnary(_ translation: Translation) -> [String: Any] {
-	let dict = NSMutableDictionary()
+    let dict = NSMutableDictionary()
 	for (tradKey, tradValue) in translation.translations {
         let allKeys = tradKey.components(separatedBy: ".")
-        guard let keyName = allKeys.last else {
-            continue
-        }
-        
+        guard let keyName = allKeys.last else { continue }
         let spaces = allKeys.dropLast()
         var currentDict: NSMutableDictionary? = dict
         for space in spaces {
@@ -69,8 +66,21 @@ private func convertToYAMLDictionnary(_ translation: Translation) -> [String: An
             currentDict[keyName] = tradValue
         }
     }
-    print(dict)
-    return [:]
+    
+    return [ translation.lang: convertObjCDictionaryToSwiftDictionary(dictionary: dict) ]
+}
+
+private func convertObjCDictionaryToSwiftDictionary(dictionary: NSDictionary) -> [String: Any] {
+    var newDict = [String: Any]()
+    for (key, value) in dictionary {
+        guard let key = key as? String else { continue }
+        if let nested = value as? NSDictionary {
+            newDict[key] = convertObjCDictionaryToSwiftDictionary(dictionary: nested)
+        } else {
+            newDict[key] = value
+        }
+    }
+    return newDict
 }
 
 /// Transform a Translation object to a string content
