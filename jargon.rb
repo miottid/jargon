@@ -1,8 +1,8 @@
  class Jargon < Formula
    desc "Manage iOS localized strings from Google Spreadsheet"
    homepage "https://github.com/dmiotti/jargon"
-   url "https://github.com/dmiotti/jargon/releases/download/1.0.0/jargon"
-   sha256 "ad316aec9315f436d461a10882d2581f063535f966a0dba507f46830903cb053"
+   url "https://github.com/dmiotti/jargon/releases/download/1.1.0/jargon"
+   sha256 "2f20d8f74f209cd4b4d1bef49d945d8cc23ed5def522b5a4900d07ec45a58216"
    head "https://github.com/dmiotti/jargon.git"
 
    def install
